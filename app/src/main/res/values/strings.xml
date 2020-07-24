@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">MomentousMovies</string>
+    <string name="txt_app_name">Momentous Movies</string>
+    <string name="image_movie_content_description">Image of movie</string>
+    <string name="txt_movie_item">Movie title</string>
+    <string name="txt_the_best">The best</string>
+    <string name="movies_in_your">Movies in your</string>
+    <string name="txt_hand">Hand!</string>
 </resources>
