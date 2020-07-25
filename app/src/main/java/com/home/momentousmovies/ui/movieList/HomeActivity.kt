@@ -25,30 +25,11 @@ class HomeActivity : AppCompatActivity() {
         setContentView(R.layout.activity_home)
         initViewModel()
         initUI()
-
-        Log.w("APIKEY***", "MOVIEAPI: ${BuildConfig.MOVIE_API_KEY}")
     }
 
     private fun initViewModel() {
         viewModel.token.observe(this, renderToken )
         viewModel.movies.observe(this, renderMovies)
-
-//        viewModel.movies.observe(this, Observer { resource ->
-//            when (resource) {
-//                is OperationResult.Success -> {
-//                    resource.data?.let {movies ->
-//                        if (movies.isNotEmpty()) {
-//                            showNews(news)
-//                        } else {
-//                            showNoResults()
-//                        }
-//                    }
-//                }
-//                is OperationResult.Error<*> -> {
-//                    showError(resource.throwable.message)
-//                }
-//            }
-//        })
     }
 
     private fun initUI() {

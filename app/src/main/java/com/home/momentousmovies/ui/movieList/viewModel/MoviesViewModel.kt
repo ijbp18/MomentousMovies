@@ -33,14 +33,12 @@ class MoviesViewModel(private val repository: MovieRepository, private val repos
     val onMessageError: LiveData<Any> = _onMessageError
 
     init {
-        println("***ENTRO AL VIEWMODEL")
         retrieveToken()
     }
 
     private fun retrieveToken() {
         viewModelScope.launch{
             val result: OperationResult<TokenReponse> = withContext(Dispatchers.IO){
-
                 repositoryToken.getToken()
             }
 
