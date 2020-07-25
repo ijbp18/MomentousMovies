@@ -13,12 +13,9 @@ class MovieViewHolder(
 ): RecyclerView.ViewHolder(view) {
 
     fun bind(item: Movie) {
-
         val movieImageView = view.findViewById<ImageView>(R.id.image_movie)
         Picasso.get().load(item.image).fit().into(movieImageView)
         val title = view.findViewById<TextView>(R.id.txtMovieTitle)
         title.text = item.title
-
-
     }
 }
