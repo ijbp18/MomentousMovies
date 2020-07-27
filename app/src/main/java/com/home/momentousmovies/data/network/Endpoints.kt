@@ -1,4 +1,4 @@
-package com.home.momentousmovies.data
+package com.home.momentousmovies.data.network
 
 object Endpoints {
     const val URL_BASE = "https://dev-candidates.wifiesta.com/"

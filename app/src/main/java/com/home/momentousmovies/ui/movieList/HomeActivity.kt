@@ -2,10 +2,9 @@ package com.home.momentousmovies.ui.movieList
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
+import android.view.View
 import androidx.lifecycle.Observer
-import com.home.momentousmovies.BuildConfig
+import com.google.android.material.snackbar.Snackbar
 import com.home.momentousmovies.R
 import com.home.momentousmovies.data.OperationResult
 import com.home.momentousmovies.model.Movie
@@ -17,7 +16,6 @@ import org.koin.android.viewmodel.ext.android.viewModel
 class HomeActivity : AppCompatActivity() {
 
     private val viewModel: MoviesViewModel by viewModel()
-
     private val moviesAdapter: MoviesAdapter = MoviesAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,23 +26,62 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun initViewModel() {
-        viewModel.token.observe(this, renderToken )
-        viewModel.movies.observe(this, renderMovies)
+
+        viewModel.token.observe(this, Observer { tokenErrorMessage ->
+            showSnackbar(tokenErrorMessage)
+        })
+
+        viewModel.movies.observe(this, Observer { operation ->
+
+            when (operation) {
+                is OperationResult.Loading -> {
+                    progressBar.visibility = View.VISIBLE
+                    txt_empty.visibility = View.GONE
+                }
+                is OperationResult.Success -> {
+                    operation.data?.let { movies ->
+                        if (movies.isNotEmpty()) {
+                            progressBar.visibility = View.GONE
+                            txt_empty.visibility = View.GONE
+                            showMovies(movies)
+                        } else {
+                            progressBar.visibility = View.VISIBLE
+                            showNoResults()
+                        }
+                    }
+                }
+
+                is OperationResult.Error -> {
+                    showSnackbar(operation.throwable.message)
+                }
+            }
+        })
+
+    }
+
+    private fun showMovies(movies: List<Movie>) {
+        moviesAdapter.removeAll()
+        moviesAdapter.setData(movies)
+    }
+
+
+    private fun showNoResults() {
+        moviesAdapter.setData(emptyList())
+        txt_empty.visibility = View.VISIBLE
+        txt_empty.text = getString(R.string.no_results_found)
+
     }
 
     private fun initUI() {
         recycler_movie.adapter = moviesAdapter
     }
+    
 
-    private val renderToken = Observer<String> {token ->
-        Toast.makeText(this, "TOKEN RECUPERADO: $token", Toast.LENGTH_SHORT).show()
-    }
-
-    private val renderMovies = Observer<List<Movie>> {
-        moviesAdapter.setData(it)
-    }
-
-    private fun showError(message: String?) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    private fun showSnackbar(message: String?) {
+        Snackbar.make(
+            content,
+            message ?: getString(R.string.failed_get_data),
+            Snackbar.LENGTH_LONG
+        ).show()
     }
 }

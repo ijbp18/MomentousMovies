@@ -2,16 +2,15 @@
 
     import android.app.Application
     import android.content.SharedPreferences
-    import com.home.momentousmovies.data.ApiService
-    import com.home.momentousmovies.data.Endpoints.URL_BASE
-    import com.home.momentousmovies.data.network.ApiKeyInterceptor
+    import com.home.momentousmovies.data.network.ApiService
+    import com.home.momentousmovies.data.network.Endpoints.URL_BASE
+    import com.home.momentousmovies.data.network.AuthInterceptor
     import com.home.momentousmovies.domain.MovieRepository
     import com.home.momentousmovies.domain.MovieRepositoryImpl
     import com.home.momentousmovies.domain.TokenRepository
     import com.home.momentousmovies.domain.TokenRepositoryImpl
     import com.home.momentousmovies.ui.movieList.viewModel.MoviesViewModel
     import okhttp3.OkHttpClient
-    import okhttp3.logging.HttpLoggingInterceptor
     import org.koin.android.ext.koin.androidApplication
     import org.koin.android.viewmodel.dsl.viewModel
     import org.koin.dsl.module
@@ -20,7 +19,7 @@
     import java.util.concurrent.TimeUnit
 
     val viewModelModule = module {
-        viewModel { MoviesViewModel(get(), get(), get()) }
+        viewModel { MoviesViewModel(get(), get()) }
     }
 
     val apiServiceModule = module {
@@ -50,16 +49,14 @@
         return  androidApplication.getSharedPreferences("default",  android.content.Context.MODE_PRIVATE)
     }
 
-    private val apiKeyInterceptor by lazy { ApiKeyInterceptor() }
+    private val apiKeyInterceptor by lazy { AuthInterceptor() }
 
 
     private fun createOkHttpClient(): OkHttpClient {
-        val httpLoggingInterceptor = HttpLoggingInterceptor()
-        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         return OkHttpClient.Builder()
             .connectTimeout(60L, TimeUnit.SECONDS)
             .readTimeout(60L, TimeUnit.SECONDS)
-            .addInterceptor(httpLoggingInterceptor).build()
+            .addInterceptor(apiKeyInterceptor).build()
     }
 
 

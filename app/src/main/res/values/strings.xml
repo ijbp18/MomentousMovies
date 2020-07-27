@@ -6,4 +6,6 @@
     <string name="txt_the_best">The best</string>
     <string name="movies_in_your">Movies in your</string>
     <string name="txt_hand">Hand!</string>
+    <string name="no_results_found">No results found</string>
+    <string name="failed_get_data">Failed to get data</string>
 </resources>

@@ -45,6 +45,7 @@ ext {
     junitVersion = '4.12'
 
     picassoVersion = '2.71828'
+    glideVersion = "4.11.0"
 
     retrofitVersion = '2.8.1'
     okHttpVersion = '3.9.0'

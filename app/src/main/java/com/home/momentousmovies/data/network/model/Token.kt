@@ -1,8 +1,8 @@
-package com.home.momentousmovies.data.model
+package com.home.momentousmovies.data.network.model
 
 import com.google.gson.annotations.SerializedName
 
-data class TokenReponse(
+data class Token(
     @SerializedName("email")
     val description: String,
     @SerializedName("key")

@@ -1,16 +1,16 @@
 package com.home.momentousmovies.domain
 
-import com.home.momentousmovies.data.ApiService
+import com.home.momentousmovies.data.network.ApiService
 import com.home.momentousmovies.data.OperationResult
 import com.home.momentousmovies.model.Movie
 import java.lang.Exception
 
 class MovieRepositoryImpl(private val apiService: ApiService) : MovieRepository {
 
-    override suspend fun getMovies(header: MutableMap<String, String>): OperationResult<List<Movie>> {
+    override suspend fun getMovies(): OperationResult<List<Movie>> {//header: MutableMap<String, String>
 
         try {
-            val response = apiService.getMovies(header)
+            val response = apiService.getMovies()//header
             response.let {
                 if(it.isSuccessful){
                     it.body()?.let {movies ->

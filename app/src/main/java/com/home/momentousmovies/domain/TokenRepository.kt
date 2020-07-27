@@ -1,9 +1,8 @@
 package com.home.momentousmovies.domain
 
 import com.home.momentousmovies.data.OperationResult
-import com.home.momentousmovies.data.model.TokenReponse
-import com.home.momentousmovies.model.Movie
+import com.home.momentousmovies.data.network.model.Token
 
 interface TokenRepository {
-    suspend fun getToken(): OperationResult<TokenReponse>
+    suspend fun getToken(): OperationResult<Token>
 }
