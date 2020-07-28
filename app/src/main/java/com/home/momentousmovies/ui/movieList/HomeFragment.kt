@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.appcompat.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
@@ -24,7 +25,6 @@ import org.koin.android.viewmodel.ext.android.sharedViewModel
 class HomeFragment : Fragment(), MoviesAdapter.ItemSelectedListener {
 
     private val viewModel: MoviesViewModel by sharedViewModel()
-//    private val viewModel by viewModel<MoviesViewModel>()
     private val moviesAdapter: MoviesAdapter = MoviesAdapter(this@HomeFragment)
 
     override fun onCreateView(
@@ -38,7 +38,7 @@ class HomeFragment : Fragment(), MoviesAdapter.ItemSelectedListener {
         super.onViewCreated(view, savedInstanceState)
         setupViewModel()
         initUI()
-
+        initListener()
     }
 
     private fun setupViewModel() {
@@ -69,6 +69,19 @@ class HomeFragment : Fragment(), MoviesAdapter.ItemSelectedListener {
         })
     }
 
+    private fun initUI() { recycler_movie.adapter = moviesAdapter }
+
+    private fun initListener() {
+        etMovieSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextChange(newText: String): Boolean {
+                moviesAdapter.filterByQuery(query = newText.toLowerCase())
+                return true
+            }
+
+            override fun onQueryTextSubmit(query: String) = false
+        })
+    }
+
     private fun showMovies(movies: List<Movie>) {
         moviesAdapter.removeAll()
         moviesAdapter.setData(movies)
@@ -81,10 +94,6 @@ class HomeFragment : Fragment(), MoviesAdapter.ItemSelectedListener {
 
     }
 
-    private fun initUI() {
-        recycler_movie.adapter = moviesAdapter
-
-    }
 
     private fun showSnackbar(message: String?) {
         Snackbar.make(

@@ -10,7 +10,8 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true">
+        android:fitsSystemWindows="true"
+        android:visibility="gone">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -63,38 +64,31 @@
         android:paddingTop="10dp"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-        <TextView
-            android:id="@+id/txtDoYouWant"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/txt_the_best"
-            android:textColor="@color/black_title"
-            android:textSize="25sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/txtToDo"
-            android:layout_width="0dp"
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/etMovieSearch"
+            android:layout_width="@dimen/empty_size"
             android:layout_height="wrap_content"
-            android:text="@string/movies_in_your"
-            android:textColor="@color/grey_title"
-            android:textSize="25sp"
+            android:background="@drawable/search_movie_background"
+            app:queryHint="@string/what_we_watch_today"
+            app:iconifiedByDefault="false"
+            android:layout_marginTop="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txtDoYouWant" />
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
-            android:id="@+id/txtDreams"
+            android:id="@+id/txtPopularMovies"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/txt_hand"
-            android:textColor="@color/colorAccent"
+            android:paddingTop="10dp"
+            android:text="Popular Movies"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="25sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/txtToDo"
-            app:layout_constraintTop_toBottomOf="@id/txtDoYouWant" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/etMovieSearch" />
 
 
         <LinearLayout
@@ -103,8 +97,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:orientation="vertical"
-            app:layout_constraintStart_toStartOf="@+id/txtDreams"
-            app:layout_constraintTop_toBottomOf="@+id/txtDreams">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtPopularMovies">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_movie"

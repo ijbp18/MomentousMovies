@@ -15,7 +15,8 @@ import com.home.momentousmovies.utils.loadImage
 class MoviesAdapter(private val listener: ItemSelectedListener) :
     RecyclerView.Adapter<MoviesAdapter.ShowNewsViewHolder>() {
 
-    private var movies: List<Movie> = arrayListOf()
+    private var movieFinalList = listOf<Movie>()
+    private var movieList = listOf<Movie>()
     private lateinit var binding: ItemContainerMovieBinding
 
     interface ItemSelectedListener {
@@ -28,22 +29,26 @@ class MoviesAdapter(private val listener: ItemSelectedListener) :
         return ShowNewsViewHolder(binding)
     }
 
-    override fun getItemCount(): Int = movies.size
+    override fun getItemCount(): Int = movieList.size
 
     override fun onBindViewHolder(holder: ShowNewsViewHolder, position: Int) =
-        holder.bind(movies[position])
+        holder.bind(movieList[position])
 
     fun removeAll() {
-        movies = emptyList()
+        movieList = emptyList()
         notifyDataSetChanged()
     }
 
-    fun setData(movieList: List<Movie>) {
-        movies = movieList
+    fun setData(movies: List<Movie>) {
+        movieFinalList = movies
+        movieList = movies
         notifyDataSetChanged()
     }
 
-
+    fun filterByQuery(query: String) {
+        movieList = movieFinalList.filter { it.title.toLowerCase().contains(query) }
+        notifyDataSetChanged()
+    }
 
     inner class ShowNewsViewHolder(private val binding: ItemContainerMovieBinding) :
         RecyclerView.ViewHolder(binding.root) {

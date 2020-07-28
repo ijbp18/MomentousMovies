@@ -18,4 +18,5 @@
     <string name="failed_get_token">Failed to get token</string>
     <string name="empty_reviews">No review records</string>
     <string name="txt_casting">CASTING</string>
+    <string name="what_we_watch_today">What we watch today?</string>
 </resources>
