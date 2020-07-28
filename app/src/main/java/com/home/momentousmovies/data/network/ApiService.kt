@@ -19,6 +19,9 @@ interface ApiService {
     @GET(GET_MOVIES)
     suspend fun getMovies(): Response<List<Movie>>
 
+    @GET(GET_MOVIES)
+    suspend fun getMoviesBySort(@Query("sort") type: String): Response<List<Movie>>
+
     @GET(GET_MOVIE)
     suspend fun getMovie(@Path("id") key: Int): Response<MovieInfo>
 

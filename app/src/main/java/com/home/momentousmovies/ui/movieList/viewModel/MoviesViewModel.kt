@@ -63,6 +63,16 @@ class MoviesViewModel(
         }
     }
 
+    fun retrieveMoviesBySort(sortType: String) {
+        _movies.value = OperationResult.Loading()
+        viewModelScope.launch {
+            val result: OperationResult<List<Movie>> = withContext(Dispatchers.IO) {
+                repository.getMoviesBySort(sortType)
+            }
+            _movies.value = result
+        }
+    }
+
     fun retrieveSelectedMovie(idMovie : Int) {
 
         _selectedMovie.value = OperationResult.Loading()

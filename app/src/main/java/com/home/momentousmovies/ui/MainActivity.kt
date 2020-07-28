@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.Navigation.findNavController
 import com.home.momentousmovies.R
 import com.home.momentousmovies.ui.movieList.viewModel.MoviesViewModel
+import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
@@ -16,6 +17,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         initViewModel()
         configNav()
+        setSupportActionBar(toolbar_main)
     }
 
     private fun initViewModel() {

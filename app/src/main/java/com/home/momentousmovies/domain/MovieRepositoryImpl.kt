@@ -30,6 +30,28 @@ class MovieRepositoryImpl(private val apiService: ApiService) : MovieRepository 
 
     }
 
+    override suspend fun getMoviesBySort(sort: String): OperationResult<List<Movie>> {//header: MutableMap<String, String>
+
+        try {
+            val response = apiService.getMoviesBySort(sort)//header
+            response.let {
+                if(it.isSuccessful){
+                    it.body()?.let {movies ->
+                        return OperationResult.Success(movies)
+                    }
+                }else{
+                    val message = it.errorBody().toString()
+                    return OperationResult.Error(Exception(message))
+                }
+            }?:run{
+                return OperationResult.Error(Exception("Ocurrió un error"))
+            }
+        }catch (e:Exception){
+            return OperationResult.Error(e)
+        }
+
+    }
+
     override suspend fun getSelectedMovie(movieId: Int): OperationResult<MovieInfo> {
         try {
             val response = apiService.getMovie(movieId)//header

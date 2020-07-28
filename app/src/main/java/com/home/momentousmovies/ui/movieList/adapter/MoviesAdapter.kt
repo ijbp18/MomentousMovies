@@ -54,7 +54,7 @@ class MoviesAdapter(private val listener: ItemSelectedListener) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(movie: Movie) = with(binding) {
-            imageMovie.loadImage(movie.image.buildImageUrl(URL_BASE, GET_IMAGE))
+            if(!movie.image.isNullOrEmpty()) imageMovie.loadImage(movie.image.buildImageUrl(URL_BASE, GET_IMAGE))
             txtMovieTitle.text = movie.title
 
             root.setOnClickListener {

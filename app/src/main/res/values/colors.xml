@@ -6,4 +6,5 @@
 
     <color name="black_title">#212121</color>
     <color name="grey_title">#757575</color>
+    <color name="grey_icon">#9E9A9A</color>
 </resources>

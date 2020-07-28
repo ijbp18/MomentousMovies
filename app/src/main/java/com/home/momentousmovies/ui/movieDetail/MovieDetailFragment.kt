@@ -12,16 +12,16 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.home.momentousmovies.R
 import com.home.momentousmovies.data.OperationResult
 import com.home.momentousmovies.data.network.Endpoints
-import com.home.momentousmovies.model.Movie
 import com.home.momentousmovies.model.MovieInfo
+import com.home.momentousmovies.ui.movieDetail.adapter.HomeDetailPagerAdapter
+import com.home.momentousmovies.ui.movieDetail.adapter.MY_INFO_MOVIE_PAGE_INDEX
+import com.home.momentousmovies.ui.movieDetail.adapter.REVIEW_PAGE_INDEX
 import com.home.momentousmovies.ui.movieList.viewModel.MoviesViewModel
 import com.home.momentousmovies.utils.Constants
 import com.home.momentousmovies.utils.buildImageUrl
 import com.home.momentousmovies.utils.loadImage
-import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_movie_detail.*
 import org.koin.android.viewmodel.ext.android.sharedViewModel
-import org.koin.android.viewmodel.ext.android.viewModel
 
 class MovieDetailFragment : Fragment() {
 
@@ -47,7 +47,10 @@ class MovieDetailFragment : Fragment() {
     }
 
     private fun configViewPager() {
-        view_pager_detail.adapter = HomeDetailPagerAdapter(this)
+        view_pager_detail.adapter =
+            HomeDetailPagerAdapter(
+                this
+            )
         TabLayoutMediator(tabs, view_pager_detail) { tab, position ->
             tab.text = getTabTitle(position)
         }.attach()
@@ -87,8 +90,8 @@ class MovieDetailFragment : Fragment() {
 
         toolbar_layout.title = movie.title.toUpperCase()
         tv_movie_title.text = movie.title.toUpperCase()
-        detail_image.loadImage(movie.image.buildImageUrl(Endpoints.URL_BASE, Endpoints.GET_IMAGE))
-
+        if(!movie.image.isNullOrEmpty())
+            detail_image.loadImage(movie.image.buildImageUrl(Endpoints.URL_BASE, Endpoints.GET_IMAGE))
 
     }
 

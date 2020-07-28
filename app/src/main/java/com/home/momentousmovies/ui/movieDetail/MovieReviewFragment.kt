@@ -1,20 +1,18 @@
 package com.home.momentousmovies.ui.movieDetail
 
-import android.opengl.Visibility
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.home.momentousmovies.R
 import com.home.momentousmovies.data.OperationResult
 import com.home.momentousmovies.model.Review
+import com.home.momentousmovies.ui.movieDetail.adapter.ReviewAdapter
 import com.home.momentousmovies.ui.movieList.viewModel.MoviesViewModel
-import kotlinx.android.synthetic.main.fragment_movie_detail.*
 import kotlinx.android.synthetic.main.fragment_movie_review.*
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 
@@ -22,7 +20,8 @@ import org.koin.android.viewmodel.ext.android.sharedViewModel
 class MovieReviewFragment : Fragment() {
 
     private val viewModel: MoviesViewModel by sharedViewModel()
-    private val reviewAdapter: ReviewAdapter = ReviewAdapter()
+    private val reviewAdapter: ReviewAdapter =
+        ReviewAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

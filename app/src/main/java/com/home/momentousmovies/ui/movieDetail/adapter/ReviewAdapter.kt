@@ -1,4 +1,4 @@
-package com.home.momentousmovies.ui.movieDetail
+package com.home.momentousmovies.ui.movieDetail.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

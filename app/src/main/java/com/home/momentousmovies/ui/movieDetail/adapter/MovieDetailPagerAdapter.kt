@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package com.home.momentousmovies.ui.movieDetail
+package com.home.momentousmovies.ui.movieDetail.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.home.momentousmovies.ui.movieDetail.MovieInfoFragment
+import com.home.momentousmovies.ui.movieDetail.MovieReviewFragment
 
 const val MY_INFO_MOVIE_PAGE_INDEX = 0
 const val REVIEW_PAGE_INDEX = 1

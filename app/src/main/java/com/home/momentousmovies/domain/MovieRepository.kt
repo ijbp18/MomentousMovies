@@ -6,5 +6,6 @@ import com.home.momentousmovies.model.MovieInfo
 
 interface MovieRepository {
     suspend fun getMovies(): OperationResult<List<Movie>>
+    suspend fun getMoviesBySort(typeSort: String): OperationResult<List<Movie>>
     suspend fun getSelectedMovie(movieId: Int): OperationResult<MovieInfo>
 }

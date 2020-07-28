@@ -19,4 +19,11 @@
     <string name="empty_reviews">No review records</string>
     <string name="txt_casting">CASTING</string>
     <string name="what_we_watch_today">What we watch today?</string>
+    <string name="txt_search_action">Search</string>
+    <string name="txt_sort_action">Sort</string>
+    <string name="txt_filter">Filtrar por</string>
+    <string name="txt_popular_sort">Popular</string>
+    <string name="txt_name_sort">Title</string>
+    <string name="txt_recent_sort">Recent</string>
+    <string name="title_popular_movies">Popular Movies</string>
 </resources>

@@ -1,15 +1,12 @@
-package com.home.momentousmovies.ui.movieDetail
+package com.home.momentousmovies.ui.movieDetail.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.home.momentousmovies.R
 import com.home.momentousmovies.data.network.Endpoints.GET_IMAGE
 import com.home.momentousmovies.data.network.Endpoints.URL_BASE
 import com.home.momentousmovies.databinding.ItemContainerCastingBinding
-import com.home.momentousmovies.databinding.ItemContainerReviewBinding
 import com.home.momentousmovies.model.Cast
-import com.home.momentousmovies.model.Review
 import com.home.momentousmovies.utils.buildImageUrl
 import com.home.momentousmovies.utils.loadImage
 

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.home.momentousmovies.R
 import com.home.momentousmovies.data.OperationResult
 import com.home.momentousmovies.model.MovieInfo
+import com.home.momentousmovies.ui.movieDetail.adapter.CastingAdapter
 import com.home.momentousmovies.ui.movieList.viewModel.MoviesViewModel
 import kotlinx.android.synthetic.main.fragment_movie_info.*
 import org.koin.android.viewmodel.ext.android.sharedViewModel
@@ -17,7 +18,8 @@ import org.koin.android.viewmodel.ext.android.sharedViewModel
 class MovieInfoFragment : Fragment() {
 
     private val viewModel: MoviesViewModel by sharedViewModel()
-    private val castingAdapter: CastingAdapter = CastingAdapter()
+    private val castingAdapter: CastingAdapter =
+        CastingAdapter()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
