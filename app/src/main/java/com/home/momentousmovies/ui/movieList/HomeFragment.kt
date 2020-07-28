@@ -1,38 +1,49 @@
 package com.home.momentousmovies.ui.movieList
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
+import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
+
 import com.home.momentousmovies.R
 import com.home.momentousmovies.data.OperationResult
 import com.home.momentousmovies.model.Movie
 import com.home.momentousmovies.ui.movieList.adapter.MoviesAdapter
 import com.home.momentousmovies.ui.movieList.viewModel.MoviesViewModel
-import kotlinx.android.synthetic.main.activity_home.*
-import org.koin.android.viewmodel.ext.android.viewModel
+import com.home.momentousmovies.utils.Constants.NAME_VALUE_DETAIL
+import kotlinx.android.synthetic.main.fragment_home.*
+import org.koin.android.viewmodel.ext.android.sharedViewModel
 
-class HomeActivity : AppCompatActivity() {
 
-    private val viewModel: MoviesViewModel by viewModel()
-    private val moviesAdapter: MoviesAdapter = MoviesAdapter()
+class HomeFragment : Fragment(), MoviesAdapter.ItemSelectedListener {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home)
-        initViewModel()
-        initUI()
+    private val viewModel: MoviesViewModel by sharedViewModel()
+//    private val viewModel by viewModel<MoviesViewModel>()
+    private val moviesAdapter: MoviesAdapter = MoviesAdapter(this@HomeFragment)
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
-    private fun initViewModel() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupViewModel()
+        initUI()
 
-        viewModel.token.observe(this, Observer { tokenErrorMessage ->
-            showSnackbar(tokenErrorMessage)
-        })
+    }
 
-        viewModel.movies.observe(this, Observer { operation ->
+    private fun setupViewModel() {
 
+        viewModel.movies.observe(viewLifecycleOwner, Observer { operation ->
             when (operation) {
                 is OperationResult.Loading -> {
                     progressBar.visibility = View.VISIBLE
@@ -56,14 +67,12 @@ class HomeActivity : AppCompatActivity() {
                 }
             }
         })
-
     }
 
     private fun showMovies(movies: List<Movie>) {
         moviesAdapter.removeAll()
         moviesAdapter.setData(movies)
     }
-
 
     private fun showNoResults() {
         moviesAdapter.setData(emptyList())
@@ -74,8 +83,8 @@ class HomeActivity : AppCompatActivity() {
 
     private fun initUI() {
         recycler_movie.adapter = moviesAdapter
+
     }
-    
 
     private fun showSnackbar(message: String?) {
         Snackbar.make(
@@ -84,4 +93,10 @@ class HomeActivity : AppCompatActivity() {
             Snackbar.LENGTH_LONG
         ).show()
     }
+
+    override fun onMovieSelected(movie: Movie, sharedImageView: ImageView) {
+        val bundle = bundleOf(NAME_VALUE_DETAIL to movie.id)
+        view?.findNavController()?.navigate(R.id.movieDetailFragment, bundle)
+    }
+
 }

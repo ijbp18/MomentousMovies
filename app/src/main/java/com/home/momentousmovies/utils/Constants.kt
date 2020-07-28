@@ -7,5 +7,6 @@ object Constants {
     const val API_KEY_NAME= "api-key"
     const val API_KEY= BuildConfig.MOVIE_API_KEY
     const val KEY_VALUE= "frvajoao@gmail.com"
+    const val NAME_VALUE_DETAIL = "selectedMovie"
 
 }

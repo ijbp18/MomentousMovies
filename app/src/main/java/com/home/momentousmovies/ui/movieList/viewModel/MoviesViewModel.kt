@@ -9,6 +9,7 @@ import com.home.momentousmovies.data.network.model.Token
 import com.home.momentousmovies.domain.MovieRepository
 import com.home.momentousmovies.domain.TokenRepository
 import com.home.momentousmovies.model.Movie
+import com.home.momentousmovies.model.MovieInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -19,12 +20,14 @@ class MoviesViewModel(
     private val repositoryToken: TokenRepository
 ) : ViewModel() {
 
-
     private val _token = MutableLiveData<String>()
     val token: LiveData<String> = _token
 
     private val _movies = MutableLiveData<OperationResult<List<Movie>>>()
     val movies: LiveData<OperationResult<List<Movie>>> = _movies
+
+    private var _selectedMovie = MutableLiveData<OperationResult<MovieInfo>>()
+    val selectedMovie: LiveData<OperationResult<MovieInfo>> = _selectedMovie
 
     init {
         retrieveToken()
@@ -57,9 +60,18 @@ class MoviesViewModel(
                 repository.getMovies()
             }
             _movies.value = result
-
         }
+    }
 
+    fun retrieveSelectedMovie(idMovie : Int) {
+
+        _selectedMovie.value = OperationResult.Loading()
+        viewModelScope.launch {
+            val result: OperationResult<MovieInfo> = withContext(Dispatchers.IO) {
+                repository.getSelectedMovie(idMovie)
+            }
+            _selectedMovie.value = result
+        }
     }
 
 }

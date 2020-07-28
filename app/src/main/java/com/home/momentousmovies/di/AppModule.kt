@@ -22,11 +22,9 @@
         viewModel { MoviesViewModel(get(), get()) }
     }
 
-    val apiServiceModule = module {
+    val networkeModule = module {
         single { createOkHttpClient() }
-        single {
-            createWebService<ApiService>(get(), URL_BASE)
-        }
+        single { createWebService<ApiService>(get(), baseUrl = URL_BASE) }
     }
 
     val RepositoryModule = module {
@@ -60,9 +58,9 @@
     }
 
 
-    inline fun <reified T> createWebService(okHttpClient: OkHttpClient, url: String): T {
+    inline fun <reified T> createWebService(okHttpClient: OkHttpClient, baseUrl: String): T {
         val retrofit = Retrofit.Builder()
-            .baseUrl(url)
+            .baseUrl(baseUrl)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -71,6 +69,6 @@
 
     val appModule = listOf(
         RepositoryModule, viewModelModule,
-        apiServiceModule, appModulePreference
+        networkeModule, appModulePreference
     )
 
