@@ -28,20 +28,21 @@ class MoviesViewModel(
     private var _selectedMovie = MutableLiveData<OperationResult<Movie>>()
     val selectedMovie: LiveData<OperationResult<Movie>> = _selectedMovie
 
-    private val _page = MutableLiveData<Int>()
 
     init {
         retrieveToken()
     }
 
     private fun retrieveToken() {
-
+        _token.value = OperationResult.Loading()
         viewModelScope.launch {
             when (val result = repositoryToken.getToken()) {
-                is OperationResult.Success -> retrieveMovies()
+                is OperationResult.Success -> {
+                    _token.value = result
+                    retrieveMovies()
+                }
                 else -> _token.value = result
             }
-
         }
     }
 
@@ -59,16 +60,7 @@ class MoviesViewModel(
         }
     }
 
-    fun retrieveMoviesByPage(page: Int) {
-        _movies.value = OperationResult.Loading()
-        viewModelScope.launch {
-            val result = repository.getMoviesByPage(page)
-            _movies.value = result
-        }
-    }
-
     fun retrieveSelectedMovie(idMovie: Int) {
-
         _selectedMovie.value = OperationResult.Loading()
         viewModelScope.launch {
             val result: OperationResult<Movie> = withContext(Dispatchers.IO) {

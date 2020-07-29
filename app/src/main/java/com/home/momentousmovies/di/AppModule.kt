@@ -1,6 +1,5 @@
 package com.home.momentousmovies.di
 
-
 import com.home.momentousmovies.data.datasource.DataSourceImpl
 import com.home.momentousmovies.data.datasource.ApiService
 import com.home.momentousmovies.data.datasource.Endpoints.URL_BASE
@@ -9,6 +8,8 @@ import com.home.momentousmovies.data.datasource.repository.TokenRepository
 import com.home.momentousmovies.data.datasource.repository.TokenRepositoryImpl
 import com.home.momentousmovies.data.datasource.repository.MovieRepository
 import com.home.momentousmovies.data.datasource.repository.MovieRepositoryImpl
+import com.home.momentousmovies.data.preference.AppPreferenceHelper
+import com.home.momentousmovies.data.preference.PreferenceHelper
 import com.home.momentousmovies.ui.movieList.viewModel.MoviesViewModel
 import com.home.momentousmovies.utils.NetworkHandler
 import okhttp3.OkHttpClient
@@ -24,7 +25,7 @@ val viewModelModule = module {
 }
 
 val networkModule = module {
-    single { createOkHttpClient() }
+    single { createOkHttpClient(preferenceHelper = get()) }
     single { createWebService<ApiService>(okHttpClient = get(), baseUrl = URL_BASE) }
 }
 
@@ -40,7 +41,11 @@ val repositoryModule = module {
         ) as MovieRepository
     }
     single {
-        TokenRepositoryImpl(networkHandler = get(), apiService = get()) as TokenRepository
+        TokenRepositoryImpl(
+            networkHandler = get(),
+            apiService = get(),
+            preferenceHelper = get()
+        ) as TokenRepository
     }
 }
 
@@ -48,13 +53,16 @@ val networkHandlerModule: Module = module {
     single { NetworkHandler(context = get()) }
 }
 
-private val apiKeyInterceptor by lazy { AuthInterceptor() }
+val preferenceModule: Module = module {
+    single { AppPreferenceHelper(context = get()) as PreferenceHelper }
+}
 
-private fun createOkHttpClient(): OkHttpClient {
+
+private fun createOkHttpClient(preferenceHelper: PreferenceHelper): OkHttpClient {
     return OkHttpClient.Builder()
         .connectTimeout(60L, TimeUnit.SECONDS)
         .readTimeout(60L, TimeUnit.SECONDS)
-        .addInterceptor(apiKeyInterceptor).build()
+        .addInterceptor(AuthInterceptor(preferenceHelper)).build()
 }
 
 
@@ -69,6 +77,7 @@ inline fun <reified T> createWebService(okHttpClient: OkHttpClient, baseUrl: Str
 
 val appModule = listOf(
     repositoryModule, viewModelModule,
-    networkModule, dataSourceModule, networkHandlerModule
+    networkModule, dataSourceModule,
+    networkHandlerModule, preferenceModule
 )
 

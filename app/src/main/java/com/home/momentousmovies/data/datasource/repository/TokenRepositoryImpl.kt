@@ -3,13 +3,15 @@ package com.home.momentousmovies.data.datasource.repository
 import com.home.momentousmovies.data.datasource.ApiService
 import com.home.momentousmovies.data.OperationResult
 import com.home.momentousmovies.data.datasource.model.TokenResponse
+import com.home.momentousmovies.data.preference.PreferenceHelper
+import com.home.momentousmovies.utils.Constants.API_KEY
 import com.home.momentousmovies.utils.Constants.FAILURE_CONNECTION
 import com.home.momentousmovies.utils.Constants.FAILURE_CUSTOM
 import com.home.momentousmovies.utils.Constants.KEY_VALUE
 import com.home.momentousmovies.utils.NetworkHandler
 import java.lang.Exception
 
-class TokenRepositoryImpl(private val networkHandler: NetworkHandler, private val apiService: ApiService) :
+class TokenRepositoryImpl(private val networkHandler: NetworkHandler, private val apiService: ApiService, private val preferenceHelper: PreferenceHelper) :
     TokenRepository {
     override suspend fun getToken(): OperationResult<TokenResponse> {
 
@@ -20,6 +22,8 @@ class TokenRepositoryImpl(private val networkHandler: NetworkHandler, private va
                     response.let {
                         if (it.isSuccessful) {
                             it.body()?.let { token ->
+                                preferenceHelper.setAccessToken(token.key)
+                                API_KEY = token.key
                                 return OperationResult.Success(token)
                             }
 

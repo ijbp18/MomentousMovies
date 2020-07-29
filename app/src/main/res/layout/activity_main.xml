@@ -37,6 +37,16 @@
         app:defaultNavHost="true"
         app:navGraph="@navigation/nav_graph" />
 
+        <ProgressBar
+            android:id="@+id/progressBarMain"
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_width="@dimen/progress_width"
+            android:layout_height="@dimen/progress_height"
+            android:indeterminate="true"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+
     </LinearLayout>
 
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -28,10 +28,6 @@ class MovieRepositoryImpl(private val networkHandler: NetworkHandler,  private v
         return remoteDataSource.getMoviesBySort(typeSort)
     }
 
-    override suspend fun getMoviesByPage(page: Int): OperationResult<List<Movie>> {
-        return remoteDataSource.getMoviesByPage(page)
-    }
-
     override suspend fun getSelectedMovie(movieId: Int): OperationResult<Movie> {
         return remoteDataSource.getSelectedMovie(movieId)
     }

@@ -37,35 +37,7 @@ class DataSourceImpl(private val apiService: ApiService) : DataSource{
                 if (it.isSuccessful) {
                     it.body()?.let { movies ->
                         return OperationResult.Success(
-                            movies.map { it.toDomain() }
-                        )
-                    }
-                } else {
-                    val message = it.errorBody().toString()
-                    return OperationResult.Error(
-                        Exception(message)
-                    )
-                }
-            } ?: run {
-                return OperationResult.Error(
-                    Exception(FAILURE_CUSTOM)
-                )
-            }
-        } catch (e: Exception) {
-            return OperationResult.Error(e)
-        }
-
-    }
-
-    override suspend fun getMoviesByPage(page: Int): OperationResult<List<Movie>> {//header: MutableMap<String, String>
-
-        try {
-            val response = apiService.getMoviesByPage(page)//header
-            response.let {
-                if (it.isSuccessful) {
-                    it.body()?.let { movies ->
-                        return OperationResult.Success(
-                            movies.map { it.toDomain() }
+                            movies.map {movieDTO ->  movieDTO.toDomain() }
                         )
                     }
                 } else {

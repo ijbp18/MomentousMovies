@@ -1,8 +1,9 @@
 package com.home.momentousmovies.ui
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation.findNavController
 import com.home.momentousmovies.R
@@ -14,7 +15,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
-class MainActivity : AppCompatActivity() {
+class MainActivity() : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +30,17 @@ class MainActivity : AppCompatActivity() {
         viewModel.token.observe(this, Observer {operation ->
             when (operation) {
 
+                is OperationResult.Loading -> {
+                    progressBarMain.visibility = View.VISIBLE
+                }
+
+                is OperationResult.Success -> {
+                    savePreference(operation.data?.key)
+                    progressBarMain.visibility = View.GONE
+                }
+
                 is OperationResult.Error -> {
+                    progressBarMain.visibility = View.GONE
                     operation.exception.message?.let {
                         snackbar(window.decorView.rootView, it)
                     }
@@ -40,6 +51,11 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    private fun savePreference(key: String?) {
+        val preferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
+        preferences.edit().putString("token", key).commit()
     }
 
     private fun configNav() = findNavController(this, R.id.nav_host_fragment)

@@ -89,15 +89,9 @@ class MovieDetailFragment : Fragment() {
 
     private fun showMovieInfo(movie: Movie) {
 
-//        toolbar_layout.title = movie.title.toUpperCase()
         tv_movie_title.text = movie.title.toUpperCase()
         if (!movie.image.isNullOrEmpty())
-            detail_image.loadImage(
-                movie.image.buildImageUrl(
-                    Endpoints.URL_BASE,
-                    Endpoints.GET_IMAGE
-                )
-            )
+            detail_image.loadImage(movie.image.buildImageUrl(Endpoints.URL_BASE, Endpoints.GET_IMAGE))
 
     }
 
