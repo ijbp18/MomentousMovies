@@ -1,74 +1,74 @@
-    package com.home.momentousmovies.di
+package com.home.momentousmovies.di
 
-    import android.app.Application
-    import android.content.SharedPreferences
-    import com.home.momentousmovies.data.network.ApiService
-    import com.home.momentousmovies.data.network.Endpoints.URL_BASE
-    import com.home.momentousmovies.data.network.AuthInterceptor
-    import com.home.momentousmovies.domain.MovieRepository
-    import com.home.momentousmovies.domain.MovieRepositoryImpl
-    import com.home.momentousmovies.domain.TokenRepository
-    import com.home.momentousmovies.domain.TokenRepositoryImpl
-    import com.home.momentousmovies.ui.movieList.viewModel.MoviesViewModel
-    import okhttp3.OkHttpClient
-    import org.koin.android.ext.koin.androidApplication
-    import org.koin.android.viewmodel.dsl.viewModel
-    import org.koin.dsl.module
-    import retrofit2.Retrofit
-    import retrofit2.converter.gson.GsonConverterFactory
-    import java.util.concurrent.TimeUnit
 
-    val viewModelModule = module {
-        viewModel { MoviesViewModel(get(), get()) }
+import com.home.momentousmovies.data.datasource.DataSourceImpl
+import com.home.momentousmovies.data.datasource.ApiService
+import com.home.momentousmovies.data.datasource.Endpoints.URL_BASE
+import com.home.momentousmovies.data.datasource.AuthInterceptor
+import com.home.momentousmovies.data.datasource.repository.TokenRepository
+import com.home.momentousmovies.data.datasource.repository.TokenRepositoryImpl
+import com.home.momentousmovies.data.datasource.repository.MovieRepository
+import com.home.momentousmovies.data.datasource.repository.MovieRepositoryImpl
+import com.home.momentousmovies.ui.movieList.viewModel.MoviesViewModel
+import com.home.momentousmovies.utils.NetworkHandler
+import okhttp3.OkHttpClient
+import org.koin.android.viewmodel.dsl.viewModel
+import org.koin.core.module.Module
+import org.koin.dsl.module
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
+
+val viewModelModule = module {
+    viewModel { MoviesViewModel(repository = get(), repositoryToken = get()) }
+}
+
+val networkModule = module {
+    single { createOkHttpClient() }
+    single { createWebService<ApiService>(okHttpClient = get(), baseUrl = URL_BASE) }
+}
+
+val dataSourceModule = module {
+    single { DataSourceImpl(apiService = get()) }
+}
+
+val repositoryModule = module {
+    single {
+        MovieRepositoryImpl(
+            networkHandler = get(),
+            remoteDataSource = get()
+        ) as MovieRepository
     }
-
-    val networkeModule = module {
-        single { createOkHttpClient() }
-        single { createWebService<ApiService>(get(), baseUrl = URL_BASE) }
+    single {
+        TokenRepositoryImpl(networkHandler = get(), apiService = get()) as TokenRepository
     }
+}
 
-    val RepositoryModule = module {
-        single<MovieRepository> { MovieRepositoryImpl(get()) }
-        single<TokenRepository> { TokenRepositoryImpl(get()) }
-    }
+val networkHandlerModule: Module = module {
+    single { NetworkHandler(context = get()) }
+}
 
-    val appModulePreference = module {
+private val apiKeyInterceptor by lazy { AuthInterceptor() }
 
-        single{
-            getSharedPrefs(androidApplication())
-        }
-
-        single<SharedPreferences.Editor> {
-            getSharedPrefs(androidApplication()).edit()
-        }
-    }
-
-    private fun getSharedPrefs(androidApplication: Application): SharedPreferences{
-        return  androidApplication.getSharedPreferences("default",  android.content.Context.MODE_PRIVATE)
-    }
-
-    private val apiKeyInterceptor by lazy { AuthInterceptor() }
+private fun createOkHttpClient(): OkHttpClient {
+    return OkHttpClient.Builder()
+        .connectTimeout(60L, TimeUnit.SECONDS)
+        .readTimeout(60L, TimeUnit.SECONDS)
+        .addInterceptor(apiKeyInterceptor).build()
+}
 
 
-    private fun createOkHttpClient(): OkHttpClient {
-        return OkHttpClient.Builder()
-            .connectTimeout(60L, TimeUnit.SECONDS)
-            .readTimeout(60L, TimeUnit.SECONDS)
-            .addInterceptor(apiKeyInterceptor).build()
-    }
+inline fun <reified T> createWebService(okHttpClient: OkHttpClient, baseUrl: String): T {
+    val retrofit = Retrofit.Builder()
+        .baseUrl(baseUrl)
+        .client(okHttpClient)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+    return retrofit.create(T::class.java)
+}
 
-
-    inline fun <reified T> createWebService(okHttpClient: OkHttpClient, baseUrl: String): T {
-        val retrofit = Retrofit.Builder()
-            .baseUrl(baseUrl)
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        return retrofit.create(T::class.java)
-    }
-
-    val appModule = listOf(
-        RepositoryModule, viewModelModule,
-        networkeModule, appModulePreference
-    )
+val appModule = listOf(
+    repositoryModule, viewModelModule,
+    networkModule, dataSourceModule, networkHandlerModule
+)
 

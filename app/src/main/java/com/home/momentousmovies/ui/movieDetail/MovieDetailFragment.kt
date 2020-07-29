@@ -5,14 +5,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
 
 import com.home.momentousmovies.R
 import com.home.momentousmovies.data.OperationResult
-import com.home.momentousmovies.data.network.Endpoints
-import com.home.momentousmovies.model.MovieInfo
+import com.home.momentousmovies.data.datasource.Endpoints
+import com.home.momentousmovies.model.Movie
 import com.home.momentousmovies.ui.movieDetail.adapter.HomeDetailPagerAdapter
 import com.home.momentousmovies.ui.movieDetail.adapter.MY_INFO_MOVIE_PAGE_INDEX
 import com.home.momentousmovies.ui.movieDetail.adapter.REVIEW_PAGE_INDEX
@@ -39,7 +40,6 @@ class MovieDetailFragment : Fragment() {
         val placeSelected = getBundleExtra()
         configViewPager()
         setupViewModel()
-        setHasOptionsMenu(true)
         if (placeSelected != null) {
             viewModel.retrieveSelectedMovie(placeSelected)
         }
@@ -69,29 +69,35 @@ class MovieDetailFragment : Fragment() {
 
             when (operation) {
                 is OperationResult.Loading -> {
-                    progressBar_.visibility = View.VISIBLE
+                    progressBarDetail.visibility = View.VISIBLE
                 }
                 is OperationResult.Success -> {
                     operation.data?.let { movie ->
-                        progressBar_.visibility = View.GONE
+                        progressBarDetail.visibility = View.GONE
                         showMovieInfo(movie)
                     }
                 }
 
                 is OperationResult.Error -> {
-                    showSnackbar(operation.throwable.message)
+                    progressBarDetail.visibility = View.GONE
+                    showSnackbar(operation.exception.message)
                 }
             }
 
         })
     }
 
-    private fun showMovieInfo(movie: MovieInfo) {
+    private fun showMovieInfo(movie: Movie) {
 
-        toolbar_layout.title = movie.title.toUpperCase()
+//        toolbar_layout.title = movie.title.toUpperCase()
         tv_movie_title.text = movie.title.toUpperCase()
-        if(!movie.image.isNullOrEmpty())
-            detail_image.loadImage(movie.image.buildImageUrl(Endpoints.URL_BASE, Endpoints.GET_IMAGE))
+        if (!movie.image.isNullOrEmpty())
+            detail_image.loadImage(
+                movie.image.buildImageUrl(
+                    Endpoints.URL_BASE,
+                    Endpoints.GET_IMAGE
+                )
+            )
 
     }
 

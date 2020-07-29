@@ -9,6 +9,9 @@ object Constants {
     const val KEY_VALUE= "frvajoao@gmail.com"
     const val NAME_VALUE_DETAIL = "selectedMovie"
 
+    const val FAILURE_CONNECTION= "1"
+    const val FAILURE_CUSTOM= "2"
+
     const val TITLE_SORT_ASC = "title.asc"
     const val TITLE_SORT_DESC = "title.desc"
     const val DATE_SORT_ASC = "date.asc"

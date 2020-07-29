@@ -1,15 +1,16 @@
 package com.home.momentousmovies.utils
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
+import android.view.View
 import android.widget.ImageView
-import androidx.viewpager2.widget.CompositePageTransformer
-import androidx.viewpager2.widget.MarginPageTransformer
-import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
+import com.google.android.material.snackbar.Snackbar
 import com.home.momentousmovies.R
 import com.home.momentousmovies.utils.Constants.API_KEY
 import com.home.momentousmovies.utils.Constants.API_KEY_NAME
-import kotlin.math.abs
 
 fun ImageView.loadImage(urlToImage: String?) {
 
@@ -24,5 +25,12 @@ fun ImageView.loadImage(urlToImage: String?) {
 fun String.buildImageUrl(urlBase: String, urlImage: String): String {
     return StringBuilder(urlBase).append(urlImage).append(this).toString()
 }
+
+//Ui snackbar extension
+fun Context.snackbar(view: View, message: String, duration: Int = Snackbar.LENGTH_SHORT) =
+    Snackbar.make(view, message, duration).apply { show() }
+
+//Validate Internet Connection
+val Context.networkInfo: NetworkInfo? get() = (this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).activeNetworkInfo
 
 

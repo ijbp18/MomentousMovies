@@ -5,11 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.home.momentousmovies.data.OperationResult
-import com.home.momentousmovies.data.network.model.Token
-import com.home.momentousmovies.domain.MovieRepository
-import com.home.momentousmovies.domain.TokenRepository
+import com.home.momentousmovies.data.datasource.model.TokenResponse
+import com.home.momentousmovies.data.datasource.repository.MovieRepository
+import com.home.momentousmovies.data.datasource.repository.TokenRepository
 import com.home.momentousmovies.model.Movie
-import com.home.momentousmovies.model.MovieInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -20,14 +19,16 @@ class MoviesViewModel(
     private val repositoryToken: TokenRepository
 ) : ViewModel() {
 
-    private val _token = MutableLiveData<String>()
-    val token: LiveData<String> = _token
+    private val _token = MutableLiveData<OperationResult<TokenResponse>>()
+    val token: LiveData<OperationResult<TokenResponse>> = _token
 
     private val _movies = MutableLiveData<OperationResult<List<Movie>>>()
     val movies: LiveData<OperationResult<List<Movie>>> = _movies
 
-    private var _selectedMovie = MutableLiveData<OperationResult<MovieInfo>>()
-    val selectedMovie: LiveData<OperationResult<MovieInfo>> = _selectedMovie
+    private var _selectedMovie = MutableLiveData<OperationResult<Movie>>()
+    val selectedMovie: LiveData<OperationResult<Movie>> = _selectedMovie
+
+    private val _page = MutableLiveData<Int>()
 
     init {
         retrieveToken()
@@ -36,48 +37,41 @@ class MoviesViewModel(
     private fun retrieveToken() {
 
         viewModelScope.launch {
-            val result: OperationResult<Token> = withContext(Dispatchers.IO) {
-                repositoryToken.getToken()
+            when (val result = repositoryToken.getToken()) {
+                is OperationResult.Success -> retrieveMovies()
+                else -> _token.value = result
             }
 
-            when (result) {
-                is OperationResult.Success -> {
-                    retrieveMovies()
-                }
-                is OperationResult.Error -> {
-                    _token.value = result.message
-                }
-
-            }
         }
     }
 
     private fun retrieveMovies() {
-
         _movies.value = OperationResult.Loading()
         viewModelScope.launch {
-            val result: OperationResult<List<Movie>> = withContext(Dispatchers.IO) {
-                repository.getMovies()
-            }
-            _movies.value = result
+            _movies.value = withContext(Dispatchers.IO) { repository.getMovies() }
         }
     }
 
     fun retrieveMoviesBySort(sortType: String) {
         _movies.value = OperationResult.Loading()
         viewModelScope.launch {
-            val result: OperationResult<List<Movie>> = withContext(Dispatchers.IO) {
-                repository.getMoviesBySort(sortType)
-            }
+            _movies.value = withContext(Dispatchers.IO) { repository.getMoviesBySort(sortType) }
+        }
+    }
+
+    fun retrieveMoviesByPage(page: Int) {
+        _movies.value = OperationResult.Loading()
+        viewModelScope.launch {
+            val result = repository.getMoviesByPage(page)
             _movies.value = result
         }
     }
 
-    fun retrieveSelectedMovie(idMovie : Int) {
+    fun retrieveSelectedMovie(idMovie: Int) {
 
         _selectedMovie.value = OperationResult.Loading()
         viewModelScope.launch {
-            val result: OperationResult<MovieInfo> = withContext(Dispatchers.IO) {
+            val result: OperationResult<Movie> = withContext(Dispatchers.IO) {
                 repository.getSelectedMovie(idMovie)
             }
             _selectedMovie.value = result

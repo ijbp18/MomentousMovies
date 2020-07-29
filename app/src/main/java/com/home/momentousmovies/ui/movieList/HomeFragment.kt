@@ -10,16 +10,17 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.snackbar.Snackbar
 import com.home.momentousmovies.R
 import com.home.momentousmovies.data.OperationResult
 import com.home.momentousmovies.model.Movie
 import com.home.momentousmovies.ui.movieList.adapter.MoviesAdapter
 import com.home.momentousmovies.ui.movieList.viewModel.MoviesViewModel
+import com.home.momentousmovies.utils.Constants
 import com.home.momentousmovies.utils.Constants.DATE_SORT_DESC
 import com.home.momentousmovies.utils.Constants.NAME_VALUE_DETAIL
 import com.home.momentousmovies.utils.Constants.POPULARITY_DESC
 import com.home.momentousmovies.utils.Constants.TITLE_SORT_ASC
+import com.home.momentousmovies.utils.snackbar
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import org.koin.android.viewmodel.ext.android.sharedViewModel
@@ -30,7 +31,7 @@ class HomeFragment : Fragment(), MoviesAdapter.ItemSelectedListener,
 
     private val viewModel: MoviesViewModel by sharedViewModel()
     private val moviesAdapter: MoviesAdapter = MoviesAdapter(this@HomeFragment)
-    private lateinit var bottomSheetdialog : BottomSheetDialog
+    private lateinit var bottomSheetDialog : BottomSheetDialog
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,24 +52,28 @@ class HomeFragment : Fragment(), MoviesAdapter.ItemSelectedListener,
         viewModel.movies.observe(viewLifecycleOwner, Observer { operation ->
             when (operation) {
                 is OperationResult.Loading -> {
-                    progressBar.visibility = View.VISIBLE
+                    progressBarHome.visibility = View.VISIBLE
                     txt_empty.visibility = View.GONE
                 }
                 is OperationResult.Success -> {
                     operation.data?.let { movies ->
                         if (movies.isNotEmpty()) {
-                            progressBar.visibility = View.GONE
+                            progressBarHome.visibility = View.GONE
                             txt_empty.visibility = View.GONE
                             showMovies(movies)
                         } else {
-                            progressBar.visibility = View.VISIBLE
+                            progressBarHome.visibility = View.GONE
                             showNoResults()
                         }
                     }
                 }
 
                 is OperationResult.Error -> {
-                    showSnackbar(operation.throwable.message)
+                    operation.exception.message?.let { context?.snackbar(contentHome, it) }
+                }
+                is OperationResult.CustomError -> {
+                    val typeError = if(operation.errorType == Constants.FAILURE_CONNECTION) getString(R.string.failure_network_connection) else getString(R.string.failure_unavailable)
+                    context?.snackbar(contentHome, typeError )
                 }
             }
         })
@@ -101,17 +106,16 @@ class HomeFragment : Fragment(), MoviesAdapter.ItemSelectedListener,
 
     private fun showBottomSheetDialog() {
 
-        bottomSheetdialog = BottomSheetDialog(requireActivity())
+        bottomSheetDialog = BottomSheetDialog(requireActivity())
         val view=layoutInflater.inflate(R.layout.bottom_sheet_layout,null)
-        bottomSheetdialog.setContentView(view)
-        bottomSheetdialog.show()
+        bottomSheetDialog.setContentView(view)
+        bottomSheetDialog.show()
 
-        bottomSheetdialog.txtByName.setOnClickListener (this)
-        bottomSheetdialog.txtByPopular.setOnClickListener (this)
-        bottomSheetdialog.txtByRecent.setOnClickListener (this)
+        bottomSheetDialog.txtByName.setOnClickListener (this)
+        bottomSheetDialog.txtByPopular.setOnClickListener (this)
+        bottomSheetDialog.txtByRecent.setOnClickListener (this)
 
     }
-
 
     private fun showMovies(movies: List<Movie>) {
         moviesAdapter.removeAll()
@@ -124,14 +128,6 @@ class HomeFragment : Fragment(), MoviesAdapter.ItemSelectedListener,
         txt_empty.text = getString(R.string.no_results_found)
     }
 
-
-    private fun showSnackbar(message: String?) {
-        Snackbar.make(
-            content,
-            message ?: getString(R.string.failed_get_data),
-            Snackbar.LENGTH_LONG
-        ).show()
-    }
 
     override fun onMovieSelected(movie: Movie, sharedImageView: ImageView) {
         val bundle = bundleOf(NAME_VALUE_DETAIL to movie.id)
@@ -153,7 +149,7 @@ class HomeFragment : Fragment(), MoviesAdapter.ItemSelectedListener,
             R.id.txtByRecent -> sortType = DATE_SORT_DESC
         }
 
-        if(bottomSheetdialog.isShowing) bottomSheetdialog.dismiss()
+        if(bottomSheetDialog.isShowing) bottomSheetDialog.dismiss()
         viewModel.retrieveMoviesBySort(sortType)
     }
 

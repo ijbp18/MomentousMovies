@@ -1,4 +1,4 @@
-package com.home.momentousmovies.data.network
+package com.home.momentousmovies.data.datasource
 
 import com.home.momentousmovies.utils.Constants.API_KEY
 import com.home.momentousmovies.utils.Constants.API_KEY_NAME

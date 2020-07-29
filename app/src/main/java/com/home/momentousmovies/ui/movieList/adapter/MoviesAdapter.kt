@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 
 import androidx.recyclerview.widget.RecyclerView
-import com.home.momentousmovies.data.network.Endpoints.GET_IMAGE
-import com.home.momentousmovies.data.network.Endpoints.URL_BASE
+import com.home.momentousmovies.data.datasource.Endpoints.GET_IMAGE
+import com.home.momentousmovies.data.datasource.Endpoints.URL_BASE
 import com.home.momentousmovies.databinding.ItemContainerMovieBinding
 import com.home.momentousmovies.model.Movie
 import com.home.momentousmovies.utils.buildImageUrl

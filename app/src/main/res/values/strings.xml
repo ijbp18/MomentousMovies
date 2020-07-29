@@ -26,4 +26,6 @@
     <string name="txt_name_sort">Title</string>
     <string name="txt_recent_sort">Recent</string>
     <string name="title_popular_movies">Popular Movies</string>
+    <string name="failure_network_connection">Network Error</string>
+    <string name="failure_unavailable">Unknown Error</string>
 </resources>

@@ -7,4 +7,9 @@
     <color name="black_title">#212121</color>
     <color name="grey_title">#757575</color>
     <color name="grey_icon">#9E9A9A</color>
+
+    <color name="success">#51ac4c</color>
+    <color name="warning">#eca75c</color>
+    <color name="error">#c65656</color>
+    <color name="neutral">#333333</color>
 </resources>
