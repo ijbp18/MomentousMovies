@@ -3,7 +3,6 @@ package com.home.momentousmovies.ui.movieList
 import android.os.Bundle
 import android.view.*
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -12,7 +11,8 @@ import androidx.navigation.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.home.momentousmovies.R
 import com.home.momentousmovies.data.OperationResult
-import com.home.momentousmovies.model.Movie
+import com.home.momentousmovies.databinding.FragmentHomeBinding
+import com.home.momentousmovies.domain.model.Movie
 import com.home.momentousmovies.ui.movieList.adapter.MoviesAdapter
 import com.home.momentousmovies.ui.movieList.viewModel.MoviesViewModel
 import com.home.momentousmovies.utils.Constants
@@ -29,6 +29,8 @@ import org.koin.android.viewmodel.ext.android.sharedViewModel
 class HomeFragment : Fragment(), MoviesAdapter.ItemSelectedListener,
     SearchView.OnQueryTextListener, View.OnClickListener {
 
+    private lateinit var binding: FragmentHomeBinding
+
     private val viewModel: MoviesViewModel by sharedViewModel()
     private val moviesAdapter: MoviesAdapter = MoviesAdapter(this@HomeFragment)
     private lateinit var bottomSheetDialog : BottomSheetDialog
@@ -37,7 +39,8 @@ class HomeFragment : Fragment(), MoviesAdapter.ItemSelectedListener,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -52,17 +55,21 @@ class HomeFragment : Fragment(), MoviesAdapter.ItemSelectedListener,
         viewModel.movies.observe(viewLifecycleOwner, Observer { operation ->
             when (operation) {
                 is OperationResult.Loading -> {
-                    progressBarHome.visibility = View.VISIBLE
-                    txt_empty.visibility = View.GONE
+                    with(binding){
+                        progressBarHome.visibility = View.VISIBLE
+                        txt_empty.visibility = View.GONE
+                    }
                 }
                 is OperationResult.Success -> {
                     operation.data?.let { movies ->
                         if (movies.isNotEmpty()) {
-                            progressBarHome.visibility = View.GONE
-                            txt_empty.visibility = View.GONE
+                            with(binding){
+                                progressBarHome.visibility = View.GONE
+                                txt_empty.visibility = View.GONE
+                            }
                             showMovies(movies)
                         } else {
-                            progressBarHome.visibility = View.GONE
+                            binding.progressBarHome.visibility = View.GONE
                             showNoResults()
                         }
                     }
@@ -80,9 +87,8 @@ class HomeFragment : Fragment(), MoviesAdapter.ItemSelectedListener,
     }
 
     private fun initUI() {
-        recycler_movie.adapter = moviesAdapter
+        binding.recyclerMovie.adapter = moviesAdapter
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_item, menu)
@@ -90,7 +96,6 @@ class HomeFragment : Fragment(), MoviesAdapter.ItemSelectedListener,
         val searchView = search.actionView as SearchView
         searchView.setOnQueryTextListener(this)
     }
-
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
@@ -114,15 +119,14 @@ class HomeFragment : Fragment(), MoviesAdapter.ItemSelectedListener,
         bottomSheetDialog.txtByName.setOnClickListener (this)
         bottomSheetDialog.txtByPopular.setOnClickListener (this)
         bottomSheetDialog.txtByRecent.setOnClickListener (this)
-
     }
 
-    private fun showMovies(movies: List<Movie>) {
+    private fun showMovies(movies: List<Movie>) =  with(binding) {
         moviesAdapter.removeAll()
         moviesAdapter.setData(movies)
     }
 
-    private fun showNoResults() {
+    private fun showNoResults() = with(binding) {
         moviesAdapter.setData(emptyList())
         txt_empty.visibility = View.VISIBLE
         txt_empty.text = getString(R.string.no_results_found)
@@ -136,7 +140,7 @@ class HomeFragment : Fragment(), MoviesAdapter.ItemSelectedListener,
 
     override fun onQueryTextSubmit(query: String?)= false
 
-    override fun onQueryTextChange(newText: String): Boolean {
+    override fun onQueryTextChange(newText: String): Boolean   {
         moviesAdapter.filterByQuery(newText.toLowerCase())
         return true
     }

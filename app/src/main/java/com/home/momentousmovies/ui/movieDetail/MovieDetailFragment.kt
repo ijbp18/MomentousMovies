@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
@@ -13,7 +12,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.home.momentousmovies.R
 import com.home.momentousmovies.data.OperationResult
 import com.home.momentousmovies.data.datasource.Endpoints
-import com.home.momentousmovies.model.Movie
+import com.home.momentousmovies.domain.model.Movie
 import com.home.momentousmovies.ui.movieDetail.adapter.HomeDetailPagerAdapter
 import com.home.momentousmovies.ui.movieDetail.adapter.MY_INFO_MOVIE_PAGE_INDEX
 import com.home.momentousmovies.ui.movieDetail.adapter.REVIEW_PAGE_INDEX
@@ -98,10 +97,6 @@ class MovieDetailFragment : Fragment() {
     private fun getBundleExtra() = arguments?.getInt(Constants.NAME_VALUE_DETAIL)
 
     private fun showSnackbar(message: String?) {
-        Snackbar.make(
-            root_content,
-            message ?: getString(R.string.failed_get_data),
-            Snackbar.LENGTH_LONG
-        ).show()
+        Snackbar.make(root_content, message ?: getString(R.string.failed_get_data), Snackbar.LENGTH_SHORT).show()
     }
 }

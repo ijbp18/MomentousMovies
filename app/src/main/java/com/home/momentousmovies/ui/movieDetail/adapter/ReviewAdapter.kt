@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.home.momentousmovies.databinding.ItemContainerReviewBinding
-import com.home.momentousmovies.model.Review
+import com.home.momentousmovies.domain.model.Review
 
 class ReviewAdapter : RecyclerView.Adapter<ReviewAdapter.ShowReviewViewHolder>() {
 

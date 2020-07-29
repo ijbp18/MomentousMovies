@@ -1,7 +1,7 @@
 package com.home.momentousmovies.data.datasource
 
 import com.home.momentousmovies.data.OperationResult
-import com.home.momentousmovies.model.Movie
+import com.home.momentousmovies.domain.model.Movie
 
 interface DataSource {
     suspend fun getMovies(): OperationResult<List<Movie>>

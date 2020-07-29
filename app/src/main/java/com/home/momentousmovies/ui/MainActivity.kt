@@ -1,6 +1,5 @@
 package com.home.momentousmovies.ui
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -12,10 +11,9 @@ import com.home.momentousmovies.ui.movieList.viewModel.MoviesViewModel
 import com.home.momentousmovies.utils.Constants
 import com.home.momentousmovies.utils.snackbar
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_home.*
 import org.koin.android.viewmodel.ext.android.viewModel
 
-class MainActivity() : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +33,6 @@ class MainActivity() : AppCompatActivity() {
                 }
 
                 is OperationResult.Success -> {
-                    savePreference(operation.data?.key)
                     progressBarMain.visibility = View.GONE
                 }
 
@@ -51,11 +48,6 @@ class MainActivity() : AppCompatActivity() {
                 }
             }
         })
-    }
-
-    private fun savePreference(key: String?) {
-        val preferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
-        preferences.edit().putString("token", key).commit()
     }
 
     private fun configNav() = findNavController(this, R.id.nav_host_fragment)

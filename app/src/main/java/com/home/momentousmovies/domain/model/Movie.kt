@@ -1,6 +1,4 @@
-package com.home.momentousmovies.model
-
-import com.home.momentousmovies.data.datasource.model.ReviewResponse
+package com.home.momentousmovies.domain.model
 
 data class Movie(
     val id: Int,

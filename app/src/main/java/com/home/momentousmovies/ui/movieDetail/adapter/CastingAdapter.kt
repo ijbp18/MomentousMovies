@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.home.momentousmovies.data.datasource.Endpoints.GET_IMAGE
 import com.home.momentousmovies.data.datasource.Endpoints.URL_BASE
 import com.home.momentousmovies.databinding.ItemContainerCastingBinding
-import com.home.momentousmovies.model.Cast
+import com.home.momentousmovies.domain.model.Cast
 import com.home.momentousmovies.utils.buildImageUrl
 import com.home.momentousmovies.utils.loadImage
 

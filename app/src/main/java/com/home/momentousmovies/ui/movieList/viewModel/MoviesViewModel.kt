@@ -8,7 +8,7 @@ import com.home.momentousmovies.data.OperationResult
 import com.home.momentousmovies.data.datasource.model.TokenResponse
 import com.home.momentousmovies.data.datasource.repository.MovieRepository
 import com.home.momentousmovies.data.datasource.repository.TokenRepository
-import com.home.momentousmovies.model.Movie
+import com.home.momentousmovies.domain.model.Movie
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -36,7 +36,7 @@ class MoviesViewModel(
     private fun retrieveToken() {
         _token.value = OperationResult.Loading()
         viewModelScope.launch {
-            when (val result = repositoryToken.getToken()) {
+            when (val result =  withContext(Dispatchers.IO) {repositoryToken.getToken() }) {
                 is OperationResult.Success -> {
                     _token.value = result
                     retrieveMovies()
@@ -63,10 +63,7 @@ class MoviesViewModel(
     fun retrieveSelectedMovie(idMovie: Int) {
         _selectedMovie.value = OperationResult.Loading()
         viewModelScope.launch {
-            val result: OperationResult<Movie> = withContext(Dispatchers.IO) {
-                repository.getSelectedMovie(idMovie)
-            }
-            _selectedMovie.value = result
+            _selectedMovie.value = withContext(Dispatchers.IO) { repository.getSelectedMovie(idMovie) }
         }
     }
 

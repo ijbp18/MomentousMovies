@@ -9,7 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.home.momentousmovies.R
 import com.home.momentousmovies.data.OperationResult
-import com.home.momentousmovies.model.Movie
+import com.home.momentousmovies.domain.model.Movie
 import com.home.momentousmovies.ui.movieDetail.adapter.CastingAdapter
 import com.home.momentousmovies.ui.movieList.viewModel.MoviesViewModel
 import kotlinx.android.synthetic.main.fragment_movie_info.*

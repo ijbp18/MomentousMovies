@@ -5,7 +5,6 @@ import com.home.momentousmovies.data.datasource.Endpoints.GET_MOVIE
 import com.home.momentousmovies.data.datasource.Endpoints.GET_MOVIES
 import com.home.momentousmovies.data.datasource.model.MovieResponse
 import com.home.momentousmovies.data.datasource.model.TokenResponse
-import com.home.momentousmovies.model.Movie
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path

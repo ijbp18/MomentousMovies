@@ -2,7 +2,7 @@ package com.home.momentousmovies.data.datasource
 
 import com.home.momentousmovies.data.OperationResult
 import com.home.momentousmovies.data.datasource.model.toDomain
-import com.home.momentousmovies.model.Movie
+import com.home.momentousmovies.domain.model.Movie
 import com.home.momentousmovies.utils.Constants.FAILURE_CUSTOM
 import java.lang.Exception
 
