@@ -36,7 +36,7 @@ class MoviesViewModel(
     private fun retrieveToken() {
         _token.value = OperationResult.Loading()
         viewModelScope.launch {
-            when (val result =  withContext(Dispatchers.IO) {repositoryToken.getToken() }) {
+            when (val result =  with(Dispatchers.IO) {repositoryToken.getToken() }) {
                 is OperationResult.Success -> {
                     _token.value = result
                     retrieveMovies()
@@ -46,10 +46,10 @@ class MoviesViewModel(
         }
     }
 
-    private fun retrieveMovies() {
+    fun retrieveMovies() {
         _movies.value = OperationResult.Loading()
         viewModelScope.launch {
-            _movies.value = withContext(Dispatchers.IO) { repository.getMovies() }
+            _movies.value = with(Dispatchers.IO) { repository.getMovies() }
         }
     }
 
